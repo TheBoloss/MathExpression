@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.1)
-project(MathLexer)
+project(MathExpression)
 set(CMAKE_CXX_STANDARD 20)
 set(SOURCES src/main.cpp)
 set(EXECUTABLE math)
