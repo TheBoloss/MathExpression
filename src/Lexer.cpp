@@ -8,21 +8,7 @@
 #include "Error.hpp"
 #include "types.hpp"
 
-Lexer::Lexer(std::string rawExpr) : m_rawExpr(rawExpr) {}
-
-std::vector<std::string> Lexer::splitString(const std::string &input)
-{
-  std::istringstream iss(input);
-  std::vector<std::string> tokens;
-  std::string token;
-
-  while (std::getline(iss, token, ' '))
-  {
-    tokens.push_back(token);
-  }
-
-  return tokens;
-}
+Lexer::Lexer(std::string rawExpr) : m_rawExpr(rawExpr), m_splitExpr(std::vector<std::string>{}) {}
 
 Operator::Operator Lexer::getOperatorFromString(const std::string &input)
 {
@@ -163,10 +149,67 @@ Error Lexer::calculate(unsigned int position)
   return error;
 }
 
+std::vector<std::string> Lexer::splitString(const std::string &input)
+{
+  std::vector<std::string> fragments;
+  std::string currentFragment;
+  bool lastIsDigit = false;
+
+  for (char c : input)
+  {
+    bool isDigitOrDot = (c >= '0' && c <= '9') || c == '.';
+
+    if (isDigitOrDot == lastIsDigit)
+    {
+      currentFragment += c;
+    }
+    else
+    {
+      if (!currentFragment.empty())
+      {
+        fragments.push_back(currentFragment);
+        currentFragment.clear();
+      }
+      currentFragment += c;
+    }
+
+    lastIsDigit = isDigitOrDot;
+  }
+
+  if (!currentFragment.empty())
+  {
+    fragments.push_back(currentFragment);
+  }
+
+  return fragments;
+}
+
 Error Lexer::tokenizeExpression()
 {
   Error error;
+
+  // Remove spaces from string
+  std::string::iterator end_pos = std::remove(m_rawExpr.begin(), m_rawExpr.end(), ' ');
+  m_rawExpr.erase(end_pos, m_rawExpr.end());
+
+  if (m_rawExpr.size() == 0)
+  {
+    error.setType(ErrorType::InvalidStructure);
+    return error;
+  }
+
   m_splitExpr = Lexer::splitString(m_rawExpr);
+
+  return error;
+}
+
+Error Lexer::startCompute()
+{
+  Error error;
+
+  error = Lexer::tokenizeExpression();
+  if (error.type())
+    return error;
 
   for (const auto &str : m_splitExpr)
   {

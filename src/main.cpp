@@ -18,7 +18,7 @@ int main(int argc, char **argv)
   std::string rawExpr = argv[1];
 
   Lexer lexer(rawExpr);
-  Error tError = lexer.tokenizeExpression();
+  Error tError = lexer.startCompute();
   if (tError.type())
   {
     std::string errorMsg;

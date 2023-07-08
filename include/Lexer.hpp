@@ -18,10 +18,11 @@ private:
   bool isNumber(const std::string &input);
   unsigned int getPriorityOperator();
   Error calculate(unsigned int position);
+  Error tokenizeExpression();
 
 public:
   Lexer(std::string rawExpr);
-  Error tokenizeExpression();
+  Error startCompute();
 };
 
 #endif
