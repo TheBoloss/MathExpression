@@ -243,6 +243,8 @@ Error Lexer::startCompute()
   {
     auto priorityOperationPos = Lexer::getPriorityOperator();
     error = Lexer::calculate(priorityOperationPos);
+    if (error.type())
+      return error;
   }
 
   if (m_tokenList[0].type() == TokenType::OperatorT)
