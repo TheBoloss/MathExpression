@@ -8,6 +8,12 @@ _A math expression calculator_
 
 ## Usage
 
+### Download binary
+
+You can download the compiled binary from the [Releases](https://github.com/TheBoloss/MathExpression/releases) page.
+
+If you encounter issues with libraries, or if you want to build your own binary, you can follow the next section [Build](#build).
+
 ### Build
 
 To build the app, you need to have CMake and Make installed.
