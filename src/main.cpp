@@ -1,15 +1,47 @@
 #include <iostream>
 #include <string>
-#include <format>
+#include <vector>
+#include "Token.hpp"
+#include "Lexer.hpp"
 
 int main(int argc, char **argv)
 {
   if (argc != 2)
   {
-    std::cerr << std::format("-- MathExpression --\nYou must specify a math expression.\n\n  Usage:   {} <MathExpression>\n  Example: {} '3*2+4*9'\n", argv[0], argv[0]);
+    std::cerr << "         -- MathExpression --\n"
+              << "-- Calculate mathematic expressions --\n"
+              << "Fatal: You must specify a math expression.\n\n"
+              << "  Usage:   " << argv[0] << " <MathExpression>\n"
+              << "  Example: " << argv[0] << " '3*2+4*9'" << std::endl;
     return 1;
   }
   std::string rawExpr = argv[1];
-  std::cout << std::format(">>> Raw \"{}\" -> length: {}", rawExpr, rawExpr.length()) << std::endl;
+
+  Lexer lexer(rawExpr);
+  Error tError = lexer.tokenizeExpression();
+  if (tError.type())
+  {
+    std::string errorMsg;
+    switch (tError.type())
+    {
+    case ErrorType::InvalidOperator:
+      errorMsg = "Invalid operator";
+      break;
+    case ErrorType::InvalidStructure:
+      errorMsg = "Invalid expression structure";
+      break;
+    default:
+      errorMsg = "Unknown error";
+      break;
+    }
+    std::cerr << "Fatal: " << errorMsg << " (position ";
+    if (tError.position())
+      std::cerr << tError.position();
+    else
+      std::cerr << "[unknown]";
+    std::cerr << ")." << std::endl;
+    return 1;
+  }
+
   return 0;
 }
