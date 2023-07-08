@@ -251,7 +251,7 @@ Error Lexer::startCompute()
     return error;
   }
 
-  std::cout << "Final result: " << m_tokenList[0].value() << std::endl;
+  std::cout << ">>> " << m_tokenList[0].value() << std::endl;
 
   return error;
 }
